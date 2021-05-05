@@ -34,16 +34,66 @@ func (v ViewerTime) String() string {
 	return t.Format("2006-01-02 15:04:05")
 }
 
-func (todo *ToDo) CreateToDo() (result ToDo, err error) {
-	return ToDo{}, nil
+func (todo *ToDo) CreateToDo() (lastinsertid int64, err error) {
+	stmt, err := Db.Prepare("INSERT INTO todolist(Subject,Priority,CreatedAt)VALUES(?,?,NOW())")
+
+	if err != nil {
+		log.Fatal("Insert Prepare error : ", err)
+		return
+	}
+
+	defer stmt.Close()
+
+	ret, err := stmt.Exec(todo.Subject, todo.Priority)
+
+	if err != nil {
+		log.Fatal("Insert Exec error : ", err)
+		return
+	}
+
+	id, _ := ret.LastInsertId()
+
+	return id, nil
 }
 
-func (todo *ToDo) UpdateToDo() (result ToDo, err error) {
-	return ToDo{}, nil
+func (todo *ToDo) UpdateToDo() (err error) {
+	stmt, err := Db.Prepare("UPDATE todolist SET Subject = ?,Priority = ? WHERE Id = ?")
+
+	if err != nil {
+		log.Fatal("Insert Prepare error : ", err)
+		return
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(todo.Subject, todo.Priority, todo.Id)
+
+	if err != nil {
+		log.Fatal("Insert Exec error : ", err)
+		return
+	}
+
+	return
 }
 
 func (todo *ToDo) DeleteToDo() (err error) {
-	return nil
+	stmt, err := Db.Prepare("DELETE FROM  todolist WHERE Id = ?")
+
+	if err != nil {
+		log.Fatal("Insert Prepare error : ", err)
+		return
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(todo.Id)
+
+	if err != nil {
+		log.Fatal("Insert Exec error : ", err)
+		return
+	}
+
+	return
 }
 
 func ReadToDoList() (todoList []ToDo, err error) {
@@ -65,5 +115,19 @@ func ReadToDoList() (todoList []ToDo, err error) {
 	}
 
 	rows.Close()
+	return
+}
+
+func ReadToDo(id int) (todo ToDo, err error) {
+	todo = ToDo{}
+
+	err = Db.QueryRow("SELECT Id,Subject,Priority,CreatedAt FROM ToDoList WHERE Id = ?", id).
+		Scan(&todo.Id, &todo.Subject, &todo.Priority, &todo.CreatedAt)
+
+	if err != nil {
+		log.Fatal("Connection Error : ", err)
+		return
+	}
+
 	return
 }
