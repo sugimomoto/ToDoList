@@ -1,10 +1,11 @@
 package main
 
 import (
+	"ToDoList/data"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
-	"time"
 )
 
 func main() {
@@ -21,30 +22,11 @@ func indexTemplate(writer http.ResponseWriter, request *http.Request) {
 		panic(err)
 	}
 
-	ToDoList := GetToDoLost()
+	ToDoList, err := data.ReadToDoList()
 
-	t.Execute(writer, ToDoList)
-}
-
-func GetToDoLost() []ToDo {
-	var toDoList []ToDo
-
-	for i := 0; i < 10; i++ {
-		todo := ToDo{
-			Id:        i,
-			Subject:   "Sample",
-			Priority:  "A",
-			CreatedAt: time.Now(),
-		}
-		toDoList = append(toDoList, todo)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return toDoList
-}
-
-type ToDo struct {
-	Id        int
-	Subject   string
-	Priority  string
-	CreatedAt time.Time
+	t.Execute(writer, ToDoList)
 }
