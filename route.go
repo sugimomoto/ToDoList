@@ -104,3 +104,48 @@ func editToDoTemplate(writer http.ResponseWriter, request *http.Request) {
 
 	http.Redirect(writer, request, "/", 302)
 }
+
+func deleteFormTemplate(writer http.ResponseWriter, request *http.Request) {
+	vals := request.URL.Query()
+	id := vals.Get("id")
+
+	t, err := template.ParseFiles("templates/delete_form.html")
+	if err != nil {
+		panic(err)
+	}
+
+	i, _ := strconv.Atoi(id)
+
+	ToDo, err := data.ReadToDo(i)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t.Execute(writer, ToDo)
+}
+
+func deleteToDoTemplate(writer http.ResponseWriter, request *http.Request) {
+
+	err := request.ParseForm()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	id := request.PostFormValue("todoid")
+
+	i, _ := strconv.Atoi(id)
+
+	todo := data.ToDo{
+		Id: i,
+	}
+
+	err = todo.DeleteToDo()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Redirect(writer, request, "/", 302)
+}

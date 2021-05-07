@@ -12,6 +12,8 @@ func main() {
 	http.HandleFunc("/create", createToDoTemplate)
 	http.HandleFunc("/editform", editFormTemplate)
 	http.HandleFunc("/edit", editToDoTemplate)
+	http.HandleFunc("/deleteform", deleteFormTemplate)
+	http.HandleFunc("/delete", deleteToDoTemplate)
 	http.ListenAndServe(":8081", nil)
 
 	fmt.Println("End")

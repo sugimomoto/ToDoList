@@ -12,7 +12,7 @@ var Db *sql.DB
 
 func init() {
 	var err error
-	Db, err = sql.Open("mysql", "root:Password!@/sample?parseTime=true")
+	Db, err = sql.Open("mysql", "user:Password!@/sample?parseTime=true")
 
 	if err != nil {
 		panic(err)
@@ -77,7 +77,7 @@ func (todo *ToDo) UpdateToDo() (err error) {
 }
 
 func (todo *ToDo) DeleteToDo() (err error) {
-	stmt, err := Db.Prepare("DELETE FROM  todolist WHERE Id = ?")
+	stmt, err := Db.Prepare("DELETE FROM todolist WHERE Id = ?")
 
 	if err != nil {
 		log.Fatal("Insert Prepare error : ", err)

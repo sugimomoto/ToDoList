@@ -19,7 +19,7 @@
               <a class="nav-link active" aria-current="page" href="#">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/createform">Create</a>
+              <a class="nav-link active" aria-current="page" href="/add">Add</a>
             </li>
           </ul>
         </div>
@@ -27,33 +27,33 @@
     </nav>
 
     <div class="container">
+      <form role="form" action="/delete" method="post">
+        <div class="form-group">
+          <div class="mb-3">
+            <label class="form-label">Id</label>
+            <input class="form-control" value="{{ .Id }}" disabled>
+            <input class="form-control" type="hidden" id="todoid" name="todoid" value="{{ .Id }}" />
+          </div>
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Title</th>
-            <th scope="col">Priority</th>
-            <th scope="col">Created At</th>
-            <th scope="col">Edit/Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{ range . }}
-          <tr>
-            <th scope="row">{{ .Id }}</th>
-            <td>{{ .Subject }}</td>
-            <td>{{ .Priority }}</td>
-            <td>{{ .CreatedAt }}</td>
-            <td>
-              <button type="button" class="btn btn-primary" onclick="location.href='/editform?id={{ .Id }}'" >Edit</button>
-              <button type="button" class="btn btn-secondary" onclick="location.href='/deleteform?id={{ .Id }}'" >Delete</button>
-            </td>
-          </tr>
-          {{ end }}
-        </tbody>
-      </table>
-      </div>
+          <div class="mb-3">
+            <label class="form-label">Subject</label>
+            <input class="form-control" id="subject" name="subject"  value="{{ .Subject }}" disabled>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Priority</label>
+            <input class="form-control" id="priority" name="priority"  value="{{ .Priority }}" disabled>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">CreatedAt</label>
+            <input class="form-control" id="createdat" name="createdat"  value="{{ .CreatedAt }}" disabled>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
 
   </body>
 </html>
